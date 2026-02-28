@@ -1,5 +1,5 @@
 # Genai-learning-path
-This repo contains my learning path for Generative AI
+This repo contains my learning path for Generative AI.
 
 Topics to be covered:
 ```
@@ -16,5 +16,4 @@ Topics to be covered:
 - Assignment 2: Multi-Agent Analytical Platform
 
 ```
-Each branch represents a singular topic
-The branch will also contain all code related to the topic
+Each branch represents a singular topic and will contain all code related to the topic.
