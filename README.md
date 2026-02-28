@@ -1,6 +1,6 @@
 # Python
 subtopics
-"""
+```
 -Syntax
 -Loops
 -Conditionals 
@@ -13,5 +13,5 @@ subtopics
 -Error & Exception Handling
 -Iterators, Generators (cover-builtin decorators too), Decorators, Closures
 -File Handling
-"""
+```
 
