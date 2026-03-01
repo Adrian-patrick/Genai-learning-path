@@ -15,13 +15,23 @@ process()
 """
 explicit check
 """
-if temperatur is None:
+if temperature is None:
+    raise ValueError("Temperature is required")
 
 """
 using in for multi condition checks
 """
 if role in ["admin", "editor"]:
+    grant_access()
 
 """
 chaining comparisons
 """
+if 0 <= temperature <= 1:
+    print("Temperature is valid")
+
+"""
+failsafes
+"""
+if not config:
+    raise ValueError("Configuration is missing")
