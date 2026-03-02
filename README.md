@@ -1,17 +1,10 @@
-# Python
+# SQL
 subtopics
 ```
--Syntax
--Loops
--Conditionals 
--Operators
--*args/**kwargs
--Data Types: int, str, bool, list, tuple, dict, set
--Functions: Higher-Order, Anonymous (lambda)
--OOP: Classes, Inheritance, Encapsulation, Polymorphism
--Modules, Packages, Libraries, Frameworks
--Error & Exception Handling
--Iterators, Generators (cover-builtin decorators too), Decorators, Closures
--File Handling
+-Basics: Terminologies, Keys, ER Model, Data Types
+-DDL, DML, DCL, TCL
+-Operators & Miscellaneous Data Types
+-ORDER BY, JOINs (INNER, LEFT, RIGHT, FULL)
+-Practice: DDL & DML Queries
 ```
 
