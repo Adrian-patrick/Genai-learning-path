@@ -1,36 +1,56 @@
 from database import connect
 
+
 class Employee:
     def __init__(self):
         self.db = connect()
         self.cur = self.db.cursor()
 
     def add_employee(self):
-        id = input("enter id : ")
-        name = input("enter name : ")
-        salary = input("enter salary : ")
+        emp_id = input("Enter id: ")
+        name = input("Enter name: ")
+        salary = input("Enter salary: ")
 
-        self.cur.execute("insert into employee values(%s,%s,%s)",(id,name,salary),)
+        self.cur.execute(
+            "INSERT INTO employee VALUES (%s, %s, %s)",
+            (emp_id, name, salary),
+        )
         self.db.commit()
-        print("added successfully")
+
+        print("Employee added successfully")
 
     def view_employees(self):
-        self.cur.execute("select * from employee")
+        self.cur.execute("SELECT * FROM employee")
 
-        data = self.cur.fetchall()
-        for row in data:
-            print(f"id : {row[0]} name : {row[1]} salary : {row[2]}")
-
+        rows = self.cur.fetchall()
+        for row in rows:
+            print(f"id: {row[0]} | name: {row[1]} | salary: {row[2]}")
 
     def update_employee(self):
-        id = input("enter id to update : ")
-        salary = input("enter salary to update : ")
-        self.cur.execute("update employee set salary = %s where id = %s",(salary,id),)
+        emp_id = input("Enter id to update: ")
+        salary = input("Enter new salary: ")
+
+        self.cur.execute(
+            "UPDATE employee SET salary = %s WHERE id = %s",
+            (salary, emp_id),
+        )
         self.db.commit()
-        print("updated salary")
+
+        print("Salary updated")
 
     def delete_employee(self):
-        id = input("eneter the id : ")
-        self.cur.execute("delete from employee where id = %s;",(id),)
+        emp_id = input("Enter id: ")
+
+        self.cur.execute(
+            "DELETE FROM employee WHERE id = %s",
+            (emp_id,),
+        )
         self.db.commit()
-        print("deleted employee")
+
+        print("Employee deleted")
+
+"""
+improvements 
+proper sql syntax
+no overshadowing variables
+"""
