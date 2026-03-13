@@ -1,19 +1,13 @@
-# Genai-learning-path
-This repo contains my learning path for Generative AI.
+# Fastapi
 
 Topics to be covered:
 ```
-- Python
-- SQL
-- Assignment 1: Library Management System
-- Git
-- FastAPI
-- Pydantic
-- Neural Networks, LLMs & Transformers
-- Prompt Engineering
-- Langfuse
-- Pydantic AI
-- Assignment 2: Multi-Agent Analytical Platform
-
+- REST API Concepts & HTTP Methods
+- Path & Query Parameters 
+- Request Body
+- Pydantic Integration for Validation
+- Dependency Injection
+- Middleware & Authentication (OAuth2 / JWT)
+- Async Endpoints & Background Tasks
+- Swagger / OpenAPI Docs
 ```
-Each branch represents a singular topic and will contain all code related to the topic.
