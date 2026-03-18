@@ -27,8 +27,6 @@ def get_health():
 def model_get_id(model_id: int = None):
     return model_information.get(model_id,{"status":"invalid id provided "})
 
-
-
 from fastapi import HTTPException
 
 @api.post('/predict', response_model=Outputmodel)
