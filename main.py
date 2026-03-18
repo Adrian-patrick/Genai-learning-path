@@ -9,8 +9,6 @@ class Modelname(str,Enum):
     gpt4 = "gpt4"
     claude35 = "claude3.5"
 
-<<<<<<< HEAD
-
 class Inputmodel(BaseModel):
     model: str = Field(..., description="model name", examples=["gpt4"])
     text: str = Field(..., description="content to infer", examples=["can you explain what is a supercar?"])
@@ -55,9 +53,4 @@ def simulated_api_call(content : str,flag=0):
     if flag:
         return "simulated response"
     return None
-=======
-@api.get('/')
-def index():
-    return {"message" : "hello world again"}
->>>>>>> c82ddfd255541230fbf1e8084a75438c32029153
 
