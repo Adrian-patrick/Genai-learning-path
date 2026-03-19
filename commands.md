@@ -40,6 +40,14 @@ updating main while your in diff branch(only individual branch) : git switch fea
 
 before pushing : git pull --rebase origin main
 
+comparing commits : git log --oneline -> git diff commit_id_1 commit_id_2
+
+restore to last commited version : git restore file_name or folder_name or git restore .
+
+git stashing : git stash -> git stash list -> git stash apply
+
+git revert creates new commit indicating revert : git revert commit_id
+
 Good practices :
 
 clean commit messages
