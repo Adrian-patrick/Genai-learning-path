@@ -1,4 +1,4 @@
-# Genai-learning-path
+# Git and Github
 
 Topics to be covered:
 ```
