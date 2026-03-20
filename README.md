@@ -1,6 +1,6 @@
 # Fastapi
 
-Topics to be covered:
+Topics to be covered :
 ```
 - REST API Concepts & HTTP Methods
 - Path & Query Parameters 
