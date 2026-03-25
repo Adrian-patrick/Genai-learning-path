@@ -1,19 +1,12 @@
-# Genai-learning-path
-This repo contains my learning path for Generative AI.
+# Neural Networks, LLMs & Transformers
 
 Topics to be covered:
 ```
-- Python
-- SQL
-- Assignment 1: Library Management System
-- Git
-- FastAPI
-- Pydantic
-- Neural Networks, LLMs & Transformers
-- Prompt Engineering
-- Langfuse
-- Pydantic AI
-- Assignment 2: Multi-Agent Analytical Platform
+- Neural Network Basics & Backpropagation
+- Embeddings & Vector Representations
+- Transformer Architecture (Encoder / Decoder)
+- Attention Mechanism (Self-Attention, Multi-Head)
+- Large Language Models (GPT, BERT, etc.)
+- Tokenization & Context Windows"
 
 ```
-Each branch represents a singular topic and will contain all code related to the topic.
