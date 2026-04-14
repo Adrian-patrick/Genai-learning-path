@@ -34,7 +34,7 @@ def planner_node(state: State):
 You are an expert software architect in python.
 
 Given a user query, design a MINIMAL application.
-
+ALWAYS include a README.md file with description and instructions to run the app.
 Return a list of files with:
 - filename
 - description
@@ -101,19 +101,48 @@ Description: {file.description}
         ]
     }
 
+# def creator_node(state: State):
+#     print("creator started")
+#     base_dir = "generated_app"
+#     os.makedirs(base_dir, exist_ok=True)
+#     file_count = 1
+#     for filename, code in state["code"].items():
+#         print(f"file {file_count} is getting created")
+#         file_path = os.path.join(base_dir, filename)
+
+#         with open(file_path, "w", encoding="utf-8") as f:
+#             f.write(code)
+#         file_count += 1
+#     print("creator ended")
+#     return {
+#         "messages": state["messages"] + [
+#             {"role": "assistant", "content": "Files created successfully"}
+#         ]
+#     }
+
+#ai generated code with better guardrails
 def creator_node(state: State):
-    print("creator started")
+
+    print("📁 Creator started...")
+
     base_dir = "generated_app"
     os.makedirs(base_dir, exist_ok=True)
-    file_count = 1
+
     for filename, code in state["code"].items():
-        print(f"file {file_count} is getting created")
-        file_path = os.path.join(base_dir, filename)
+
+        clean_filename = filename.strip().replace("\n", "")
+        file_path = os.path.join(base_dir, clean_filename)
+
+        print(f"   📄 Creating: {clean_filename}")
+
+        # 🔥 Fix: ensure directories exist
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
         with open(file_path, "w", encoding="utf-8") as f:
-            f.write(code)
-        file_count += 1
-    print("creator ended")
+            f.write(str(code))
+
+    print("✅ Creator finished")
+
     return {
         "messages": state["messages"] + [
             {"role": "assistant", "content": "Files created successfully"}
