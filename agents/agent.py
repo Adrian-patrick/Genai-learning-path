@@ -23,7 +23,6 @@ class State(TypedDict):
     results: Annotated[list,operator.add]
     current_step: int
 
-
 #model logic
 llm = AzureChatOpenAI(
     azure_deployment=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"],
@@ -79,20 +78,28 @@ def worker_node(state: State):
     
     # We use the search tool directly for simplicity in the worker
     # If you want the LLM to decide, you'd need a more complex sub-graph
-    content = web_search.invoke({"query": task})
-    
+    llm_with_tools = llm.bind_tools([web_search])
+    response = llm_with_tools.invoke(f"decide if the task reqires a tool call, if it doesnt just perform the task. task:{task}.return the output in strings")
+    clean_content = response.content
+
+    if not clean_content and response.tool_calls:
+        # For this logic, we'll just note that a tool was called
+        # In a full graph, you'd route this to a ToolNode
+        tool_name = response.tool_calls[0]['name']
+        clean_content = f"[Executed tool: {tool_name}]"
+
     return {
-        "results": [f"Task {idx+1} result: {content}"], 
+        "results": [f"Task {idx+1} result: {clean_content}"], 
         "current_step": idx + 1
     }
 
 def aggregator_node(state: State):
     # Combine results for the final answer
-    context = "\n".join(state['results'])
+    context = state['results']
     structured_llm = llm.with_structured_output(ResponseModel)
     
     final_answer = structured_llm.invoke(
-    f"Summarize the following research into a CONCISE 3-paragraph report: {context}"
+    f"Check if the context is simple else Summarize the following research into a CONCISE 3-paragraph report: {context}"
     )
     
     # Return as an AIMessage so main.py can parse it
@@ -114,11 +121,7 @@ builder.add_edge("planner", "worker")
 # The Level 4 Loop
 builder.add_conditional_edges(
     "worker",
-    should_continue,
-    {
-        "worker": "worker",      # Loop back to worker
-        "aggregator": "aggregator" # Move to final summary
-    }
+    should_continue
 )
 
 builder.add_edge("aggregator", END)

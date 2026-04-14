@@ -15,7 +15,7 @@ system_prompt = system_prompt_v2.compile()
 prompt_v1 = langfuse.get_prompt("test",version=1)
 prompt_v2 = langfuse.get_prompt("test",version=2)
 prompt_v3 = langfuse.get_prompt("test",version=3)
-user_query = prompt_v3.compile()
+user_query = prompt_v1.compile()
 
 def main():
     config = {'configurable': {'thread_id': '1'},
