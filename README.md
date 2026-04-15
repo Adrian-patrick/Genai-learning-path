@@ -10,6 +10,14 @@ planner -> plans the steps
 worker -> outputs python code for each of the steps
 creator -> creates files with code
 
+problems:
+
+-creating very complex code even if i have given minimal
+-no proper structure/architecture
+-files are not getting created properly in the folders
+-very slow(3m 42s for task manager)
+
+
 improvements that can be made:
 
 -add code correction if it is wrong before creator
