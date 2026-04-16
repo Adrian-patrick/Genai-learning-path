@@ -1,10 +1,16 @@
 import asyncio
-from agents import State, graph, TopicNode
+from agents import State, graph, TopicNode,generic_agent
 
 async def main():
-    user_query = "Artificial Intelligence"
-    state_instance = State(domain=user_query)
 
+    user_query = input("user query : ")
+
+    response = await generic_agent.run(user_query)
+
+    response_domain = response.output
+
+    print(f"Domain : {response_domain.domain}")
+    state_instance = State(domain=response_domain)
 
     result = await graph.run(TopicNode(state=state_instance))
 

@@ -1,13 +1,13 @@
 import os
 from dataclasses import dataclass, field
 from dotenv import load_dotenv
-from pydantic_ai import Agent
+from pydantic_ai import Agent,RunContext
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.azure import AzureProvider
 from pydantic_graph import BaseNode, Graph, End
 
 load_dotenv()
-
+#defining llm
 @dataclass
 class State:
     domain: str
@@ -20,6 +20,14 @@ azure_provider = AzureProvider(
 )
 
 model = OpenAIChatModel(os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"], provider=azure_provider)
+#defining agents
+generic_agent = Agent(
+    model=model,
+    system_prompt="your task is extract the domain from the user query and initialize the domain variable" \
+    "leave the topics variable alone",
+    output_type=State,
+    output_retries=3
+)
 
 topic_agent = Agent(
     model=model,
@@ -34,7 +42,7 @@ summarizer_agent = Agent(
     output_type=str,
     output_retries=3
 )
-
+#defining nodes
 @dataclass
 class TopicNode(BaseNode[State]):
     state: State
@@ -55,10 +63,22 @@ class SummarizerNode(BaseNode[State]):
     async def run(self, ctx) -> End[State]:
         print("Summarizer node started")
         for topic in self.state.topics:
-            summary = await summarizer_agent.run(f"summarize {topic} in under 20 words")
+            summary = await summarizer_agent.run(f"search the web and summarize {topic} in under 20 words")
             self.state.topics[topic] = summary.output
 
         print("Summarizer node ended")
         return End(self.state)
+    
+#duckduckgo search tool for summarizer
+from ddgs import DDGS
 
+search_tool = DDGS()
+
+@summarizer_agent.tool
+async def search_web(ctx:RunContext[None],query:str)-> str:
+    print("searching...")
+    search_results = search_tool.text(query, max_results=5)
+    print("search ended")
+    return str(search_results)
+#defining graph
 graph = Graph(nodes=[TopicNode, SummarizerNode])
