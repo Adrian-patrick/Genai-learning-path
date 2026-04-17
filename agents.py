@@ -11,7 +11,9 @@ load_dotenv()
 @dataclass
 class State:
     domain: str
-    topics: dict[str, str] = field(default_factory=dict)
+    steps : list[str] | None = None
+    steps_mapped: dict[str, str] = field(default_factory=dict)
+    final_output : str | None = None
 
 azure_provider = AzureProvider(
     azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
@@ -24,61 +26,111 @@ model = OpenAIChatModel(os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT_NAME"], provide
 generic_agent = Agent(
     model=model,
     system_prompt="your task is extract the domain from the user query and initialize the domain variable" \
-    "leave the topics variable alone",
+    "leave the other variable alone",
     output_type=State,
     output_retries=3
 )
 
-topic_agent = Agent(
+planner_agent = Agent(
     model=model,
-    system_prompt="your job is to create a list of topics of the domain limit to 2",
+    system_prompt="""your are an expert planner
+    You already have the domain
+    Do NOT include steps that are already completed
+    you have to create steps to research it not more than three steps
+    Output ONLY a list of steps like:
+    ["identify domain", "generate topics", "summarize topics"]
+    Do NOT include numbering or extra text""",
     output_type=list[str],
     output_retries=3
 )
 
-summarizer_agent = Agent(
+executor_agent = Agent(
     model=model,
-    system_prompt="you job is to summarize the topic given",
+    system_prompt="""Your job is to follow the instruction and produce the result.
+
+Rules:
+- You may use the search_web tool ONLY ONCE if needed
+- Do NOT call the tool multiple times
+- After getting tool result, produce final answer
+- Be concise and complete""",
+    output_type=str,
+    output_retries=3
+)
+
+formatter_agent = Agent(
+    model=model,
+    system_prompt="you job is to use the data in the state and give it in a structured way",
     output_type=str,
     output_retries=3
 )
 #defining nodes
 @dataclass
-class TopicNode(BaseNode[State]):
+class PlannerNode(BaseNode[State]):
     state: State
 
-    async def run(self, ctx) -> 'SummarizerNode':
-        print("Topic node started")
-        result = await topic_agent.run(f"topics for the domain {self.state.domain}")
-        for t in result.output:
-            self.state.topics[t] = ""
+    async def run(self, ctx) -> 'ExecutorNode':
+        print("Planner node started")
+        result = await planner_agent.run(f"steps to research the domain {self.state.domain}")
+        
+        self.state.steps = result.output
 
-        print("Topic node ended")
-        return SummarizerNode(state=self.state)
+        print("Planner node ended")
+        return ExecutorNode(state=self.state)
 
 @dataclass
-class SummarizerNode(BaseNode[State]):
+class ExecutorNode(BaseNode[State]):
     state: State
 
-    async def run(self, ctx) -> End[State]:
-        print("Summarizer node started")
-        for topic in self.state.topics:
-            summary = await summarizer_agent.run(f"search the web and summarize {topic} in under 20 words")
-            self.state.topics[topic] = summary.output
+    async def run(self, ctx) -> 'FormatterNode':
+        print("Executor node started")
+        for i, step in enumerate(self.state.steps):
+            print(f"Executing step {i}: {step}")
+            work = await executor_agent.run(
+            f"""
+            Domain: {self.state.domain}
+            Instruction: {step}
 
-        print("Summarizer node ended")
-        return End(self.state)
+            Stay strictly within the domain.
+            """
+            )
+            self.state.steps_mapped[i] = work.output
+            print(f"Output: {work.output}\n")
+        print("Executor node ended")
+        return FormatterNode(state=self.state)
     
-#duckduckgo search tool for summarizer
+#duckduckgo search tool for executor
 from ddgs import DDGS
 
 search_tool = DDGS()
 
-@summarizer_agent.tool
+@executor_agent.tool
 async def search_web(ctx:RunContext[None],query:str)-> str:
     print("searching...")
     search_results = search_tool.text(query, max_results=5)
     print("search ended")
     return str(search_results)
+
+@dataclass
+class FormatterNode(BaseNode[State]):
+    state: State
+
+    async def run(self, ctx) -> End[State]:
+        print("Formatter node started")
+        result = await formatter_agent.run(
+    f"""
+    Domain: {self.state.domain}
+
+    Steps Results:
+    {self.state.steps_mapped}
+
+    Create a clean structured summary of this research.
+    """
+)
+        self.state.final_output = result.output
+
+        print("Formatter node ended")
+        return End(self.state)
+    
+
 #defining graph
-graph = Graph(nodes=[TopicNode, SummarizerNode])
+graph = Graph(nodes=[PlannerNode, ExecutorNode, FormatterNode])
