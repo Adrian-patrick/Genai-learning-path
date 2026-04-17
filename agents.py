@@ -28,7 +28,8 @@ generic_agent = Agent(
     system_prompt="your task is extract the domain from the user query and initialize the domain variable" \
     "leave the other variable alone",
     output_type=State,
-    output_retries=3
+    output_retries=3,
+    instrument=True
 )
 
 planner_agent = Agent(
@@ -41,7 +42,8 @@ planner_agent = Agent(
     ["identify domain", "generate topics", "summarize topics"]
     Do NOT include numbering or extra text""",
     output_type=list[str],
-    output_retries=3
+    output_retries=3,
+    instrument=True
 )
 
 executor_agent = Agent(
@@ -54,14 +56,16 @@ Rules:
 - After getting tool result, produce final answer
 - Be concise and complete""",
     output_type=str,
-    output_retries=3
+    output_retries=3,
+    instrument=True
 )
 
 formatter_agent = Agent(
     model=model,
     system_prompt="you job is to use the data in the state and give it in a structured way",
     output_type=str,
-    output_retries=3
+    output_retries=3,
+    instrument=True
 )
 #defining nodes
 @dataclass

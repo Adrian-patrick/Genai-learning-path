@@ -1,5 +1,17 @@
 import asyncio
 from agents import State, graph, PlannerNode,generic_agent
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+from langfuse import get_client
+ 
+langfuse = get_client()
+
+from pydantic_ai.agent import Agent
+
+# Initialize Pydantic AI instrumentation
+Agent.instrument_all()
 
 async def main():
 
