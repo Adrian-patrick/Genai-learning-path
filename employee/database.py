@@ -2,10 +2,10 @@ import pymysql
 
 def connect():
     return pymysql.connect(
-        host="127.0.0.1",
-        user="root",
-        password="root123",
-        database="company"
+        host="your_host",
+        user="your_user",
+        password="your_pass",
+        database="your_db"
     )
 
 db = connect()
