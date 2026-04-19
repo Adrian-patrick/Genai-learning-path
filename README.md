@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Complete multi-agent-backend-app
 
 ```
@@ -12,6 +11,3 @@ Tech to be used:
 -prompting
 -pydantic-ai
 -langfuse
-=======
-# Building a single agent system with pydantic-ai and fastapi
->>>>>>> pydantic-ai-fastapi
