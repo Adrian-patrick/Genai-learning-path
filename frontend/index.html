@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trip Planner Assistant</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="card">
+    <h1>Trip Planner Assistant</h1>
+    <p>Ask a travel question and the planner-worker-formatter flow will generate a response.</p>
+
+    <textarea id="query" placeholder="Example: Plan a trip to Goa for 5 days with budget options"></textarea>
+
+    <div class="actions">
+      <button id="send">Generate Plan</button>
+      <button id="history" type="button">Load History</button>
+      <span class="status" id="status">Ready</span>
+    </div>
+
+    <section class="result" id="result">Response will appear here.</section>
+    <section class="result" id="graphStep">Graph step status will appear here.</section>
+    <section class="result" id="historyBox">History will appear here.</section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
