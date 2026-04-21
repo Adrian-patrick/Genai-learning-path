@@ -10,22 +10,40 @@ async def main():
 
     print(f"planner response: {planner_response.output}")
 
-    executor_response = await executor_agent.run(planner_response.output)
+    # CHANGED: Added retry loop with critic feedback
+    max_retries = 3
+    retry_count = 0
+    executor_response = None
 
-    print(f"executor response: {executor_response.output}")
+    while retry_count < max_retries:
+        executor_response = await executor_agent.run(planner_response.output)
+        print(
+            f"executor response (attempt {retry_count + 1}): {executor_response.output}"
+        )
 
-    critic_query = f"""
-you are a critic agent your job is to return True or False depending on whether you are satified with the workers output
-and also must provide reason if it is either.
-Note: if you return false for the pass_through variable it will trigger a retry mechanism
-user query : {user_query}
-executor response : {executor_response.output}
-"""
-    critic_response = await critic_agent.run(executor_response.output)
+        critic_response = await critic_agent.run(
+            # CHANGED: Pass structured context instead of f-string
+            f"User query: {user_query}\nExecutor response: {executor_response.output}"
+        )
 
-    print(
-        f"critic agent -> \npass_through: {critic_response.pass_through}\nreason: {critic_response.reason}"
-    )
+        # CHANGED: Access .output attribute to get CriticOutput model
+        critic_output = critic_response.output
+        print(
+            f"critic agent -> pass_through: {critic_output.pass_through}, reason: {critic_output.reason}"
+        )
+
+        # CHANGED: If critic approves, exit loop; otherwise retry
+        if critic_output.pass_through:
+            print("✓ Critic approved response")
+            break
+        else:
+            retry_count += 1
+            if retry_count < max_retries:
+                print(f"✗ Retrying (attempt {retry_count + 1}/{max_retries})...")
+            else:
+                print(f"✗ Max retries ({max_retries}) reached")
+
+    print(f"\nFinal response:\n{executor_response.output}")
 
 
 if __name__ == "__main__":
