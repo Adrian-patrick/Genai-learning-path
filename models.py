@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from database import Base
 
+
 class Category(str, Enum):
     spam = "spam"
     important = "important"

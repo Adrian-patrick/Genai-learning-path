@@ -9,9 +9,11 @@ Base.metadata.create_all(bind=engine)
 
 api = FastAPI()
 
+
 @api.get("/health")
 def get_health():
     return {"status": "OK"}
+
 
 @api.post("/predict", response_model=ResponseModel)
 async def prediction(info: RequestModel, db: Session = Depends(get_db)):

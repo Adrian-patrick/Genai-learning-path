@@ -18,8 +18,10 @@ engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
-class Base(DeclarativeBase):  
-    pass  
+
+class Base(DeclarativeBase):
+    pass
+
 
 def get_db():
     db = SessionLocal()
@@ -27,4 +29,3 @@ def get_db():
         yield db
     finally:
         db.close()
-

@@ -11,3 +11,4 @@ Tech to be used:
 -prompting
 -pydantic-ai
 -langfuse
+```
