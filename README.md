@@ -30,3 +30,43 @@ Ask yourself:
 "Have I written this exact logic elsewhere?"
 "Will I really need this feature?"
 ```
+
+## Architecture
+
+The project follows a simple layered design so each part has one job and stays easy to test.
+
+Request flow:
+
+`main.py` -> `api/expense_routes.py` -> `services/expense_service.py` -> `repositories/expense_repository.py` -> `models/expense.py` -> SQLite database
+
+Layer responsibilities:
+
+`main.py`
+Starts the FastAPI app, creates tables, seeds dummy data, and includes the routes.
+
+`api/expense_routes.py`
+Handles HTTP requests, query parameters, path parameters, and response codes.
+
+`services/expense_service.py`
+Contains business rules and coordinates the repository calls.
+
+`repositories/expense_repository.py`
+Handles database queries and persistence only.
+
+`models/expense.py`
+Defines the SQLAlchemy ORM table and the shared expense category enums.
+
+`schemas/expense_schema.py`
+Defines request and response validation with Pydantic.
+
+`database/database.py`
+Creates the engine, session factory, base class, and database dependencies.
+
+`utils/seed_data.py`
+Adds dummy expenses on startup when the table is empty.
+
+### Design Notes
+
+The app is intentionally minimal and uses SQLite so it can run locally without extra setup.
+Expense categories are stored as an enum to keep values consistent across the API, service, and database layers.
+The `GET /expenses` endpoint supports category filtering, optional pagination, and an `All` option for returning every expense.
