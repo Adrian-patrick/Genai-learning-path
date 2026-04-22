@@ -1,7 +1,7 @@
-# Calculator
+# Expense Tracker api
 
 ```
-I will be coding a calculator app with proper coding principles:
+I will be coding a expense tracker api with proper coding principles:
 
 1. Cohesion & SRP (Single Responsibility Principle)
 Ask yourself: "Can I describe this class's purpose in one sentence without using 'and'?"
